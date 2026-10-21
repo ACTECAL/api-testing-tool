@@ -1,7 +1,7 @@
 {
   "name": "api-testing-tool",
   "productName": "Actecal API Tester",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A free, open-source desktop API client: send HTTP requests without browser limits, with collections, environments and curl import. No account, no telemetry.",
   "license": "MIT",
   "author": {

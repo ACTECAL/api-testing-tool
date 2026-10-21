@@ -1,6 +1,11 @@
 // Installers for Windows, macOS and Linux (electron-builder), published as a draft GitHub Release.
 // Signing is optional: without certificates the builds are unsigned, which is fine for testing. With the
 // secrets in .github/workflows/release.yml they are signed (and notarized on macOS); see docs/SIGNING.md.
+// GitHub Actions passes secrets that are not set as empty strings, and electron-builder would then try to
+// sign with an empty certificate path. Treat empty as not set.
+for (const name of ['CSC_LINK', 'CSC_KEY_PASSWORD', 'CSC_NAME', 'APPLE_ID', 'APPLE_APP_SPECIFIC_PASSWORD', 'APPLE_TEAM_ID', 'APPLE_API_KEY', 'APPLE_API_KEY_ID', 'APPLE_API_ISSUER']) {
+  if (process.env[name] === '') delete process.env[name];
+}
 const signedMac = Boolean(process.env.CSC_LINK || process.env.CSC_NAME);
 const notarize = signedMac && Boolean(process.env.APPLE_TEAM_ID && (process.env.APPLE_API_KEY || process.env.APPLE_ID));
 
