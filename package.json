@@ -1,0 +1,50 @@
+{
+  "name": "api-testing-tool",
+  "productName": "Actecal API Tester",
+  "version": "0.1.0",
+  "description": "A free, open-source desktop API client: send HTTP requests without browser limits, with collections, environments and curl import. No account, no telemetry.",
+  "license": "MIT",
+  "author": {
+    "name": "Actecal",
+    "url": "https://actecal.com"
+  },
+  "homepage": "https://github.com/ACTECAL/api-testing-tool",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ACTECAL/api-testing-tool.git"
+  },
+  "main": "./out/main/index.js",
+  "scripts": {
+    "dev": "electron-vite dev",
+    "build": "electron-vite build",
+    "typecheck": "tsc --noEmit -p tsconfig.node.json && tsc --noEmit -p tsconfig.web.json",
+    "test": "vitest run",
+    "test:e2e": "electron-vite build && node --test e2e/*.test.mjs",
+    "pack": "electron-vite build && electron-builder --config electron-builder.config.cjs --dir",
+    "dist": "electron-vite build && electron-builder --config electron-builder.config.cjs",
+    "dist:mac": "electron-vite build && electron-builder --config electron-builder.config.cjs --mac",
+    "dist:win": "electron-vite build && electron-builder --config electron-builder.config.cjs --win",
+    "dist:linux": "electron-vite build && electron-builder --config electron-builder.config.cjs --linux"
+  },
+  "dependencies": {
+    "undici": "8.12.3"
+  },
+  "devDependencies": {
+    "@types/node": "26.6.5",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "@vitejs/plugin-react": "6.1.2",
+    "electron": "44.9.3",
+    "electron-builder": "26.15.3",
+    "electron-vite": "6.0.0",
+    "playwright-core": "1.64.1",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "typescript": "7.0.2",
+    "vite": "8.3.4",
+    "vitest": "5.0.5"
+  },
+  "engines": {
+    "node": ">=22.12.0"
+  }
+}

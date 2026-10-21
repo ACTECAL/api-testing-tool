@@ -1,0 +1,54 @@
+# Builds the installers on each platform when a version tag (v1.2.3) is pushed, and uploads them to a
+# draft GitHub Release for review. Signing happens only when the secrets exist (docs/SIGNING.md); without
+# them the builds are unsigned, which is fine for testing.
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, windows-latest, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: npx electron-vite build
+
+      - name: Package for macOS (signed and notarized when the secrets are set)
+        if: runner.os == 'macOS'
+        run: npx electron-builder --config electron-builder.config.cjs --mac --publish always
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CSC_LINK: ${{ secrets.MAC_CERT_P12_BASE64 }}
+          CSC_KEY_PASSWORD: ${{ secrets.MAC_CERT_PASSWORD }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+
+      - name: Package for Windows
+        if: runner.os == 'Windows'
+        run: npx electron-builder --config electron-builder.config.cjs --win --publish always
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # Windows signing with SignPath (free for open source, once approved): submit the installers from
+      # release/ with signpath/github-action-submit-signing-request, then upload the signed files.
+      # See docs/SIGNING.md.
+
+      - name: Package for Linux
+        if: runner.os == 'Linux'
+        run: npx electron-builder --config electron-builder.config.cjs --linux --publish always
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

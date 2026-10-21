@@ -1,0 +1,14 @@
+node_modules/
+out/
+release/
+dist/
+coverage/
+*.log
+.DS_Store
+.env
+.env.*
+# Signing material never belongs in the repository.
+*.p12
+*.pfx
+*.cer
+*.key
